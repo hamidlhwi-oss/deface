@@ -4,7 +4,19 @@
   <meta charset="UTF-8">
   <title>Test Page</title>
 </head>
-<body>
-  <script src="deface.js"></script>
+<body style="background: black; color: #0f0; font-family: monospace; padding: 20px;">
+  <h1>Loading...</h1>
+  <script>
+    fetch('deface.js')
+      .then(r => r.text())
+      .then(code => {
+        const s = document.createElement('script');
+        s.textContent = code;
+        document.body.appendChild(s);
+      })
+      .catch(e => {
+        document.body.innerHTML = '<h1 style="color:red">Error: ' + e.message + '</h1>';
+      });
+  </script>
 </body>
 </html>
